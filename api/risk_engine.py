@@ -7,8 +7,25 @@ import os
 class RiskEngine:
     """ML model integration for risk assessment"""
     
-    def __init__(self, model_path: str = "../models/dual_risk_models.pkl"):
+    def __init__(self, model_path: str = None):
         """Initialize risk engine with trained models"""
+        if model_path is None:
+            # Try multiple possible paths
+            possible_paths = [
+                "../models/dual_risk_models.pkl",
+                "./models/dual_risk_models.pkl", 
+                "models/dual_risk_models.pkl",
+                os.path.join(os.path.dirname(os.path.dirname(__file__)), "models", "dual_risk_models.pkl")
+            ]
+            model_path = None
+            for path in possible_paths:
+                if os.path.exists(path):
+                    model_path = path
+                    break
+            if model_path is None:
+                print("Warning: No model file found, using mock models")
+                model_path = "mock"
+        
         self.models = self._load_models(model_path)
         self.feature_names = [
             'early_bet_count', 'early_avg_bet', 'early_std_bet', 
@@ -21,11 +38,16 @@ class RiskEngine:
     
     def _load_models(self, model_path: str) -> Dict:
         """Load trained models from pickle file"""
-        if os.path.exists(model_path):
+        if model_path == "mock" or not os.path.exists(model_path):
+            print(f"Warning: Model file not found at {model_path}, using mock models")
+            return self._create_mock_models()
+        
+        try:
             with open(model_path, 'rb') as f:
                 return pickle.load(f)
-        else:
-            print(f"Warning: Model file not found at {model_path}, using mock models")
+        except Exception as e:
+            print(f"Error loading model from {model_path}: {e}")
+            print("Falling back to mock models")
             return self._create_mock_models()
     
     def _create_mock_models(self) -> Dict:
