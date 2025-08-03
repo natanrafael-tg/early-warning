@@ -1,0 +1,1 @@
+web: cd api && python start_api.py
