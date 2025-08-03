@@ -178,16 +178,33 @@ async def get_batch_summary():
     
     This would show daily monitoring results in production.
     """
+    total_at_risk = 55300
+    users_protected = 10701
+    total_assessed = total_at_risk + users_protected
+    
+    risk_distribution_pct = {"LOW": 60, "MEDIUM": 25, "HIGH": 12, "CRITICAL": 3}
+    risk_distribution = {
+        level: int(total_assessed * (pct/100)) 
+        for level, pct in risk_distribution_pct.items()
+    }
+    
     return {
         "assessment_date": datetime.now().date(),
-        "total_users_assessed": 1250,
-        "risk_distribution": {
-            "HIGH": 126,
-            "MEDIUM": 313,
-            "LOW": 811
+        "total_users_assessed": total_assessed,
+        "users_protected": users_protected,
+        "users_at_risk": total_at_risk,
+        "protection_rate": round((users_protected / total_assessed) * 100, 1),
+        "risk_distribution": risk_distribution,
+        "risk_distribution_percentages": risk_distribution_pct,
+        "intervention_triggered": risk_distribution["HIGH"] + risk_distribution["CRITICAL"],
+        "model_performance": {
+            "7_day_accuracy": 72.7,
+            "30_day_accuracy": 64.5,
+            "target_accuracy": 70.0
         },
-        "intervention_triggered": 126,
-        "estimated_revenue_protected": 1_070_055.00,
+        "estimated_revenue_protected": 107_005_500.00,
+        "intervention_cost": 1_783_425.00,
+        "roi_percentage": round(((107_005_500 - 1_783_425) / 1_783_425) * 100, 1),
         "processing_time_seconds": 45.2
     }
 
