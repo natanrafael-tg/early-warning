@@ -202,9 +202,9 @@ async def get_batch_summary():
             "30_day_accuracy": 64.5,
             "target_accuracy": 70.0
         },
-        "estimated_revenue_protected": 107_005_500.00,
-        "intervention_cost": 1_783_425.00,
-        "roi_percentage": round(((107_005_500 - 1_783_425) / 1_783_425) * 100, 1),
+        "estimated_revenue_protected": 26751,
+        "intervention_cost": 446,
+        "roi_percentage": round(((26751 - 446) / 446) * 100, 1),
         "processing_time_seconds": 45.2
     }
 
